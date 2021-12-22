@@ -9,8 +9,13 @@ const app = new express();
 const header    = fs.readFileSync('config-hdr.txt',     'utf8');
 const footer    = fs.readFileSync('config-footer.txt',  'utf8');
 const seriesStr = fs.readFileSync('config-series.json', 'utf8');
-const series = JSON.parse(seriesStr);
+const series    = JSON.parse(seriesStr);
 console.log(series);
+
+(async () => {
+
+  
+})();
 
 const dwnLoadCmd = 'rsync -av xobtlu@oracle.usbx.me:' +
                    '/home/xobtlu/.config/flexget/config.yml config.bkup';
