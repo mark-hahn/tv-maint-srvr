@@ -1,0 +1,51 @@
+
+templates:
+  tv:
+    regexp:
+      reject:
+        - 9JKL
+        - Apocalypse.Code.The.Bible.Prediction
+        - ^Babylon
+        - Baskets
+        - Castle Builders
+        - The Champions
+        - Class Act
+        - Drunk History UK
+        - Easy Japanese
+        - Gotham Comedy Live
+        - Lacheys Bar
+        - Married At First Sight
+        - Married To Medicine
+        - Oprah Behind The Scenes
+        - uin.15
+        - Uncle Grandpa
+        - Undercover Boss
+        - Undercover High
+        - Undercover In Nederland
+        - White Collar Brawlers
+        - german
+        - swedish
+        - flemish
+        - french
+        - japanese
+        - chinese
+        - farsi
+        - italian
+        - spanish
+        - flemish
+        - complete
+        - s01-02
+        - s01-03
+        - s02-03
+        - s1-s2
+        - s1-s3
+        - s2-s3
+        - season
+
+    series:
+      settings:
+        group 720i-1080p:
+          exact: yes
+          season_packs: no
+          upgrade: no
+      720i-1080p:

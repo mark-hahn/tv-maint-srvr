@@ -6,6 +6,12 @@ const exec = util.promisify(cp.exec);
 import express from 'express';
 const app = new express();
 
+const header    = fs.readFileSync('config-hdr.txt',     'utf8');
+const footer    = fs.readFileSync('config-footer.txt',  'utf8');
+const seriesStr = fs.readFileSync('config-series.json', 'utf8');
+const series = JSON.parse(seriesStr);
+console.log(series);
+
 const dwnLoadCmd = 'rsync -av xobtlu@oracle.usbx.me:' +
                    '/home/xobtlu/.config/flexget/config.yml config.bkup';
 
@@ -37,10 +43,10 @@ const reload = async () => {
   return true;
 }
 
-upload();
-reload();
+// upload();
+// reload();
 
-// mapStr = fs.readFileSync 'tv-map', 'utf8'
+//        - Zomboat
 
 app.get('/', function (req, res) {
   res.send('invalid url')
