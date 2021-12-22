@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/mark-hahn/tv-maint-srvr#readme",
   "dependencies": {
+    "axios": "^0.24.0",
     "express": "^4.17.2"
   }
 }
