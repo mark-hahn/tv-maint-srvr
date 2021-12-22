@@ -1,21 +1,14 @@
 import fs      from "fs";
 import util    from "util";
 import * as cp from 'child_process';
-const exec = util.promisify(cp.exec);
-
+const exec     = util.promisify(cp.exec);
 import express from 'express';
-const app = new express();
+const  app     = new express();
 
 const header    = fs.readFileSync('config-hdr.txt',     'utf8');
 const footer    = fs.readFileSync('config-footer.txt',  'utf8');
 const seriesStr = fs.readFileSync('config-series.json', 'utf8');
 const series    = JSON.parse(seriesStr);
-console.log(series);
-
-(async () => {
-
-  
-})();
 
 const dwnLoadCmd = 'rsync -av xobtlu@oracle.usbx.me:' +
                    '/home/xobtlu/.config/flexget/config.yml config.bkup';
@@ -48,21 +41,24 @@ const reload = async () => {
   return true;
 }
 
-// upload();
-// reload();
-
-//        - Zomboat
-
 app.get('/', function (req, res) {
   res.send('invalid url')
 })
 
-app.post('/pickup', function (req, res) {
-  res.send('invalid url')
+app.get('/config-series.json', function (req, res) {
+  res.send(fs.readFileSync('config-series.json', 'utf8'));
 })
 
-app.delete('/pickup', function (req, res) {
-  res.send('invalid url')
+app.post('/pickup/:name', function (req, res) {
+  const name = req.params.name;
+  console.log('add series', name);
+  res.send('ok')
+})
+
+app.delete('/pickup/:name', function (req, res) {
+  const name = req.params.name;
+  console.log('delete series', name);
+  res.send('ok')
 })
 
 app.listen(8734, () => {

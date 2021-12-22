@@ -19,6 +19,13 @@
   "homepage": "https://github.com/mark-hahn/tv-maint-srvr#readme",
   "dependencies": {
     "axios": "^0.24.0",
+    "cors": "^2.8.5",
     "express": "^4.17.2"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "node_modules/*"
+    ],
+    "delay": 2500
   }
 }
