@@ -7,7 +7,7 @@ const  app     = new express();
 
 const header    = fs.readFileSync('config/config-hdr.txt',     'utf8');
 const footer    = fs.readFileSync('config/config-footer.txt',  'utf8');
-const seriesStr = fs.readFileSync('config/config-series.json', 'utf8');
+const seriesStr = fs.readFileSync('config/series.json', 'utf8');
 const series    = JSON.parse(seriesStr);
 
 const upload = async () => {
@@ -31,10 +31,10 @@ const reload = async () => {
     'ssh xobtlu@oracle.usbx.me /home/xobtlu/reload.sh');
   if(!stdout.includes('Config successfully reloaded'))  {
     console.log('\nERROR: config.yml reload failed\n', stdout, '\n');
-    return false;
+    return `config.yml reload failed: ${stdout}`;
   }
   console.log('reloaded config.yml');
-  return true;
+  return 'ok';
 }
 
 app.get('/', function (req, res) {
@@ -43,28 +43,26 @@ app.get('/', function (req, res) {
 
 const saveSeries = async () => {
   console.log('saving series');
-  fs.writeFileSync('series.json', JSON.stringify(series));
+  fs.writeFileSync('config/series.json', JSON.stringify(series));
   let str = header;
   for(let name of series)
     str += '        - "' + name.replace('"', '') + '"\n';
   str += footer;
   fs.writeFileSync('config/config.yml', str);
   await upload();
-  await reload();
+  return reload();
 };
 
-app.get('/config-series.json', function (req, res) {
-  res.send(fs.readFileSync('config/config-series.json', 'utf8'));
+app.get('/series.json', async function (req, res) {
+  res.send(fs.readFileSync('config/series.json', 'utf8'));
 });
   
-app.post('/pickup/:name', function (req, res) {
+app.post('/pickup/:name', async function (req, res) {
   const name = req.params.name;
+  console.log('adding series', name);
   try{
-    if(!series.includes(name))
-      series.push(name);
-    saveSeries();
-    console.log('added series', name);
-    res.send('ok')
+    if(!series.includes(name)) series.push(name);
+    res.send(await saveSeries())
   }
   catch (e) {
     console.log('ERROR: add series', name, e.message);
@@ -72,14 +70,13 @@ app.post('/pickup/:name', function (req, res) {
   }
 })
 
-app.delete('/pickup/:name', function (req, res) {
+app.delete('/pickup/:name', async function (req, res) {
   const name = req.params.name;
+  console.log('deleting series', name);
   try{
     const idx = series.indexOf(name);
     if (idx !== -1) series.splice(idx, 1);
-    saveSeries();
-    console.log('removed series', name);
-    res.send('ok')
+    res.send(await saveSeries());
   }
   catch (e) {
     console.log('ERROR: remove series', name, e.message);
