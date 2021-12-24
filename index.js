@@ -11,19 +11,22 @@ const seriesStr = fs.readFileSync('config/series.json', 'utf8');
 const series    = JSON.parse(seriesStr);
 
 const upload = async () => {
-  const upLoadCmd = 'rsync -av config/config.yml xobtlu@oracle.usbx.me:' +
-                    '/home/xobtlu/.config/flexget/config.yml';
+  let str = header;
+  for(let name of series)
+    str += '        - "' + name.replace('"', '') + '"\n';
+  str += footer;
+  fs.writeFileSync('config/config.yml', str);
   const {stdout} = await exec(
-    'rsync -av config/config.yml xobtlu@oracle.usbx.me:' +
-    '/home/xobtlu/.config/flexget/config.yml');
+          'rsync -av config/config.yml xobtlu@oracle.usbx.me:' +
+          '/home/xobtlu/.config/flexget/config.yml');
   const rx = new RegExp('total size is ([0-9,]*)');
   const matches = rx.exec(stdout);
-  if(!matches[1] || parseInt(matches[1].replace(',', '')) < 1000) {
+  if(!matches || parseInt(matches[1].replace(',', '')) < 1000) {
     console.log('\nERROR: config.yml upload failed\n', stdout, '\n');
-    return false;
+    return `config.yml upload failed: ${stdout}`;
   }
   console.log('uploaded config.yml, size:', matches[1]);
-  return true;
+  return 'ok';
 }
 
 const reload = async () => {
@@ -41,47 +44,51 @@ app.get('/', function (req, res) {
   res.send('invalid url')
 });
 
-const saveSeries = async () => {
-  console.log('saving series');
-  fs.writeFileSync('config/series.json', JSON.stringify(series));
-  let str = header;
-  for(let name of series)
-    str += '        - "' + name.replace('"', '') + '"\n';
-  str += footer;
-  fs.writeFileSync('config/config.yml', str);
-  await upload();
-  return reload();
+let saveTimeout = null;
+let saveResult  = 'ok';
+let saving      = false;
+
+const saveSeries = () => {
+  console.log('saving series.json');
+  fs.writeFileSync('config/series.json', JSON.stringify(series)); 
+  if(saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout = setTimeout( async () => {
+    saveTimeout = null;
+    if(saving) {
+      setTimeout(saveSeries, 10000);
+      return;
+    }
+    saving = true;
+    const uploadRes = await upload();
+    if(uploadRes != 'ok') saveResult = uploadRes;
+    else {
+      const reloadRes = await reload();
+      if(reloadRes != 'ok') saveResult = reloadRes;
+    }
+    saving = false;
+  }, 10000);  
+  const result = saveResult;
+  saveResult = 'ok';
+  return result;
 };
 
-app.get('/series.json', async function (req, res) {
+app.get('/series.json', function (req, res) {
   res.send(fs.readFileSync('config/series.json', 'utf8'));
 });
   
-app.post('/pickup/:name', async function (req, res) {
+app.post('/pickup/:name', function (req, res) {
   const name = req.params.name;
   console.log('adding series', name);
-  try{
-    if(!series.includes(name)) series.push(name);
-    res.send(await saveSeries())
-  }
-  catch (e) {
-    console.log('ERROR: add series', name, e.message);
-    res.send(e.message);
-  }
+  if(!series.includes(name)) series.push(name);
+  res.send(saveSeries());
 })
 
-app.delete('/pickup/:name', async function (req, res) {
+app.delete('/pickup/:name', function (req, res) {
   const name = req.params.name;
   console.log('deleting series', name);
-  try{
-    const idx = series.indexOf(name);
-    if (idx !== -1) series.splice(idx, 1);
-    res.send(await saveSeries());
-  }
-  catch (e) {
-    console.log('ERROR: remove series', name, e.message);
-    res.send(e.message);
-  }
+  const idx = series.indexOf(name);
+  if (idx !== -1) series.splice(idx, 1);
+  res.send(saveSeries());
 })
 
 app.listen(8734, () => {
