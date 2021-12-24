@@ -15,6 +15,7 @@ const upload = async () => {
   for(let name of series)
     str += '        - "' + name.replace('"', '') + '"\n';
   str += footer;
+  console.log('writing config.yml');
   fs.writeFileSync('config/config.yml', str);
   const {stdout} = await exec(
           'rsync -av config/config.yml xobtlu@oracle.usbx.me:' +
@@ -50,6 +51,11 @@ let saving      = false;
 
 const saveSeries = () => {
   console.log('saving series.json');
+  series.sort((a,b) => {
+    const aname = a.replace(/The\s/i, '');
+    const bname = b.replace(/The\s/i, '');
+    return (aname.toLowerCase() > bname.toLowerCase() ? +1 : -1);
+  });
   fs.writeFileSync('config/series.json', JSON.stringify(series)); 
   if(saveTimeout) clearTimeout(saveTimeout);
   saveTimeout = setTimeout( async () => {
@@ -78,14 +84,14 @@ app.get('/series.json', function (req, res) {
   
 app.post('/pickup/:name', function (req, res) {
   const name = req.params.name;
-  console.log('adding series', name);
+  console.log('-- adding series', name);
   if(!series.includes(name)) series.push(name);
   res.send(saveSeries());
 })
 
 app.delete('/pickup/:name', function (req, res) {
   const name = req.params.name;
-  console.log('deleting series', name);
+  console.log('-- deleting series', name);
   const idx = series.indexOf(name);
   if (idx !== -1) series.splice(idx, 1);
   res.send(saveSeries());
