@@ -81,7 +81,7 @@ const saveSeries = () => {
 app.get('/series.json', function (req, res) {
   res.send(fs.readFileSync('config/series.json', 'utf8'));
 });
-   
+
 app.post('/pickup/:name', function (req, res) {
   const name = req.params.name;
   console.log('-- adding series', name);
