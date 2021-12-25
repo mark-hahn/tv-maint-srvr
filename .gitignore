@@ -1,3 +1,2 @@
 node_modules
-config.yml
-series.json
+config/config.yml
