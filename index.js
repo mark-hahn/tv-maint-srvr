@@ -1,4 +1,5 @@
 import fs      from "fs";
+import {readdir, stat} from 'fs/promises';
 import util    from "util";
 import * as cp from 'child_process';
 const exec     = util.promisify(cp.exec);
@@ -9,6 +10,36 @@ const header    = fs.readFileSync('config/config-hdr.txt',     'utf8');
 const footer    = fs.readFileSync('config/config-footer.txt',  'utf8');
 const seriesStr = fs.readFileSync('config/series.json', 'utf8');
 const series    = JSON.parse(seriesStr);
+
+const nameHash = (name) =>
+  ('name-' + name
+    .toLowerCase()
+    .replace(/^the\s/, '')
+    .replace(/[^a-zA-Z0-9]*/g, ''))
+
+const folderDates =  async () => {
+  const dateList = {};
+  try {
+    const dir = await readdir('/mnt/media/tv');
+    for await (const dirent of dir) {
+      const showPath = '/mnt/media/tv/' + dirent;
+      const date   = (await stat(showPath)).birthtime;
+      const year   = date.getFullYear().toString().substring(2);
+      const month  = (date.getMonth()+1).toString().padStart(2, '0');
+      const day    = date.getDate().toString().padStart(2, '0');
+      const hash   = nameHash(dirent);
+      const dateStr = year + '/' + month + '/' + day;
+      if(hash.length > 7) {
+        dateList[nameHash(dirent)] = dateStr;
+      }
+    }
+  }
+  catch (err) {
+    console.error(err);
+  }
+  // console.log({dateList});
+  return dateList;
+}
 
 const upload = async () => {
   let str = header;
@@ -80,6 +111,12 @@ const saveSeries = () => {
 
 app.get('/series.json', function (req, res) {
   res.send(fs.readFileSync('config/series.json', 'utf8'));
+});
+
+app.get('/folderDates', async function (req, res) {
+  const str = JSON.stringify(await folderDates());
+  // console.log(str);
+  res.send(str);
 });
 
 app.post('/pickup/:name', function (req, res) {
