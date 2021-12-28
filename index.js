@@ -4,6 +4,7 @@ import util    from "util";
 import * as cp from 'child_process';
 const exec     = util.promisify(cp.exec);
 import express from 'express';
+import {createCipheriv} from "crypto";
 const  app     = new express();
 
 const header    = fs.readFileSync('config/config-hdr.txt',     'utf8');
@@ -41,6 +42,48 @@ const folderDates =  async () => {
   return dateList;
 }
 
+const recentDates =  async () => {
+  let mostRecentDate;
+  let errFlg = false;
+  const recentDates = {};
+  const recurs = async (path) => {
+    // console.log({path, mostRecentDate});
+    if(errFlg || path == '/mnt/media/tv/.stfolder') return;
+    try {
+      const fstat  = await stat(path);
+      const date   = fstat.birthtime;
+      const year   = date.getFullYear().toString().substring(2);
+      const month  = (date.getMonth()+1).toString().padStart(2, '0');
+      const day    = date.getDate().toString().padStart(2, '0');
+      const dateStr = year + '/' + month + '/' + day;
+      if(dateStr > mostRecentDate) mostRecentDate = dateStr;
+      // console.log({path, fstat, dateStr, mostRecentDate});
+      if(fstat.isDirectory()) {
+        // console.log('dir ----- ',{path, mostRecentDate});
+        // path = path.replace(/\/$/, '');
+        const dir = await readdir(path);
+        for await (const dirent of dir) {
+          recurs(path + '/' + dirent);
+        }
+      }
+    }
+    catch (err) {
+      console.error(err);
+      errFlg = true;
+    }
+  }
+  const dir = await readdir('/mnt/media/tv');
+  for await (const dirent of dir) {
+    const topLevelPath = '/mnt/media/tv/' + dirent;
+    mostRecentDate = '00/00/00';
+    await recurs(topLevelPath);
+    recentDates[nameHash(dirent)] = mostRecentDate;
+  }
+  // console.log({recentDates});
+  if(errFlg) return {};
+  else       return recentDates;
+}
+ 
 const upload = async () => {
   let str = header;
   for(let name of series)
@@ -115,6 +158,12 @@ app.get('/series.json', function (req, res) {
 
 app.get('/folderDates', async function (req, res) {
   const str = JSON.stringify(await folderDates());
+  // console.log(str);
+  res.send(str);
+});
+
+app.get('/recentDates', async function (req, res) {
+  const str = JSON.stringify(await recentDates());
   // console.log(str);
   res.send(str);
 });
