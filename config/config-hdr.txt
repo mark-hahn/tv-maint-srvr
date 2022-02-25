@@ -14,8 +14,10 @@ templates:
         - Easy Japanese
         - Gotham Comedy Live
         - Lacheys Bar
+        - Legends of Tomorrow
         - Married At First Sight
         - Married To Medicine
+        - Married to Real Estate
         - Oprah Behind The Scenes
         - uin.15
         - Uncle Grandpa
