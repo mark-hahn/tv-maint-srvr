@@ -1,16 +1,20 @@
-import fs      from "fs";
-import {readdir, stat} from 'fs/promises';
-import util    from "util";
-import * as cp from 'child_process';
-const exec     = util.promisify(cp.exec);
-import express from 'express';
+import fs               from "fs";
+import {readdir, stat}  from 'fs/promises';
+import util             from "util";
+import * as cp          from 'child_process';
+import express          from 'express';
 import {createCipheriv} from "crypto";
-const  app     = new express();
 
-const header    = fs.readFileSync('config/config-hdr.txt',     'utf8');
-const footer    = fs.readFileSync('config/config-footer.txt',  'utf8');
-const seriesStr = fs.readFileSync('config/series.json', 'utf8');
-const series    = JSON.parse(seriesStr);
+const exec = util.promisify(cp.exec);
+const app  = new express();
+
+const header    = fs.readFileSync('config/config-hdr.txt',    'utf8');
+const footer    = fs.readFileSync('config/config-footer.txt', 'utf8');
+const gapsStr   = fs.readFileSync('config/gaps.json',         'utf8');
+const seriesStr = fs.readFileSync('config/series.json',       'utf8');
+
+const gaps    = JSON.parse(gapsStr);
+const series  = JSON.parse(seriesStr);
 
 const nameHash = (name) =>
   ('name-' + name
@@ -115,10 +119,6 @@ const reload = async () => {
   return 'ok';
 }
 
-app.get('/', function (req, res) {
-  res.send('invalid url')
-});
-
 let saveTimeout = null;
 let saveResult  = 'ok';
 let saving      = false;
@@ -152,8 +152,18 @@ const saveSeries = () => {
   return result;
 };
 
+//////////////////  EXPRESS SERVER  //////////////////
+
+app.get('/', function (req, res) {
+  res.send('invalid url')
+});
+
 app.get('/series.json', function (req, res) {
   res.send(fs.readFileSync('config/series.json', 'utf8'));
+});
+
+app.get('/gaps', function (req, res) {
+  res.send(JSON.stringify(gaps), 'utf8');
 });
 
 app.get('/folderDates', async function (req, res) {
@@ -167,6 +177,14 @@ app.get('/recentDates', async function (req, res) {
   // console.log(str);
   res.send(str);
 });
+
+app.post('/gap/:seriesId/:season/:episode', function (req, res) {
+  const {seriesId, season, episode} = req.params;
+  console.log('-- adding gap', {seriesId, season, episode});
+  gaps[seriesId] = [season, episode];
+  fs.writeFileSync('config/gaps.json', JSON.stringify(gaps));
+  res.send('OK');
+})
 
 app.post('/pickup/:name', function (req, res) {
   const name = req.params.name;
