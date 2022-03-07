@@ -14,6 +14,7 @@ const gapsStr   = fs.readFileSync('config/gaps.json',         'utf8');
 const seriesStr = fs.readFileSync('config/series.json',       'utf8');
 
 const gaps    = JSON.parse(gapsStr);
+console.log('load',{gaps});
 const series  = JSON.parse(seriesStr);
 
 const nameHash = (name) =>
@@ -163,7 +164,8 @@ app.get('/series.json', function (req, res) {
 });
 
 app.get('/gaps', function (req, res) {
-  res.send(JSON.stringify(gaps), 'utf8');
+  // console.log('get',{gaps:JSON.stringify(gaps)});
+  res.send(JSON.stringify(gaps));
 });
 
 app.get('/folderDates', async function (req, res) {
@@ -178,10 +180,10 @@ app.get('/recentDates', async function (req, res) {
   res.send(str);
 });
 
-app.post('/gap/:seriesId/:season/:episode', function (req, res) {
-  const {seriesId, season, episode} = req.params;
-  console.log('-- adding gap', {seriesId, season, episode});
-  gaps[seriesId] = [season, episode];
+app.post('/gap/:series/:season/:episode', function (req, res) {
+  const {series, season, episode} = req.params;
+  console.log('-- adding gap', {series, season, episode});
+  gaps[series] = [season, episode];
   fs.writeFileSync('config/gaps.json', JSON.stringify(gaps));
   res.send('OK');
 })

@@ -24,6 +24,7 @@
   },
   "nodemonConfig": {
     "ignore": [ "config/*" ],
-    "delay": 2500
+    "delay": 2500,
+    "stdout": true
   }
 }

@@ -13,8 +13,10 @@ templates:
         - Drunk History UK
         - Easy Japanese
         - Gotham Comedy Live
+        - The Great Pottery Throw Down
         - Lacheys Bar
         - Legends of Tomorrow
+        - DC's Legends of Tomorrow
         - Married At First Sight
         - Married To Medicine
         - Married to Real Estate
