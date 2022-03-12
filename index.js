@@ -5,7 +5,7 @@ import * as cp          from 'child_process';
 import express          from 'express';
 import {createCipheriv} from "crypto";
 
-const debug = true;
+const debug = false;
 
 const exec = util.promisify(cp.exec);
 const app  = new express();
