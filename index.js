@@ -5,17 +5,21 @@ import * as cp          from 'child_process';
 import express          from 'express';
 import {createCipheriv} from "crypto";
 
+const debug = true;
+
 const exec = util.promisify(cp.exec);
 const app  = new express();
 
-const header    = fs.readFileSync('config/config-hdr.txt',    'utf8');
-const footer    = fs.readFileSync('config/config-footer.txt', 'utf8');
-const gapsStr   = fs.readFileSync('config/gapChkStarts.json',         'utf8');
-const seriesStr = fs.readFileSync('config/series.json',       'utf8');
+const headerStr = fs.readFileSync('config/config1-header.txt',   'utf8');
+const rejectStr = fs.readFileSync('config/config2-rejects.json', 'utf8');
+const middleStr = fs.readFileSync('config/config3-middle.txt',   'utf8');
+const pickupStr = fs.readFileSync('config/config4-pickups.json', 'utf8');
+const footerStr = fs.readFileSync('config/config5-footer.txt',   'utf8');
+const gapsStr   = fs.readFileSync('config/gapChkStarts.json',    'utf8');
 
-const gapChkStarts    = JSON.parse(gapsStr);
-console.log('load',{gapChkStarts});
-const series  = JSON.parse(seriesStr);
+const rejects      = JSON.parse(rejectStr);
+const pickups      = JSON.parse(pickupStr);
+const gapChkStarts = JSON.parse(gapsStr);
 
 const nameHash = (name) =>
   ('name-' + name
@@ -29,12 +33,12 @@ const folderDates =  async () => {
     const dir = await readdir('/mnt/media/tv');
     for await (const dirent of dir) {
       const showPath = '/mnt/media/tv/' + dirent;
-      const date   = (await stat(showPath)).birthtime;
-      const year   = date.getFullYear().toString().substring(2);
-      const month  = (date.getMonth()+1).toString().padStart(2, '0');
-      const day    = date.getDate().toString().padStart(2, '0');
-      const hash   = nameHash(dirent);
-      const dateStr = year + '/' + month + '/' + day;
+      const date     = (await stat(showPath)).birthtime;
+      const year     = date.getFullYear().toString().substring(2);
+      const month    = (date.getMonth()+1).toString().padStart(2, '0');
+      const day      = date.getDate().toString().padStart(2, '0');
+      const hash     = nameHash(dirent);
+      const dateStr  = year + '/' + month + '/' + day;
       if(hash.length > 7) {
         dateList[nameHash(dirent)] = dateStr;
       }
@@ -90,12 +94,19 @@ const recentDates =  async () => {
 }
  
 const upload = async () => {
-  let str = header;
-  for(let name of series)
-    str += '        - "' + name.replace('"', '') + '"\n';
-  str += footer;
+  let str = headerStr;
+  for(let name of rejects)
+    str += `        - ${name}\n`;
+  str += middleStr;
+  for(let name of pickups)
+    str += '        - "' + name.replace(/"/g, '') + '"\n';
+  str += footerStr;
   console.log('writing config.yml');
   fs.writeFileSync('config/config.yml', str);
+  if(debug) {
+    console.log("---- debugging: didn't uploaded & exiting ----");
+    process.exit();
+  }
   const {stdout} = await exec(
           'rsync -av config/config.yml xobtlu@oracle.usbx.me:' +
           '/home/xobtlu/.config/flexget/config.yml');
@@ -110,6 +121,10 @@ const upload = async () => {
 }
 
 const reload = async () => {
+  if(debug) {
+    console.log("---- debugging: didn't reload ----");
+    return 'ok';
+  }
   const {stdout} = await exec(
     'ssh xobtlu@oracle.usbx.me /home/xobtlu/reload.sh');
   if(!stdout.includes('Config successfully reloaded'))  {
@@ -124,19 +139,23 @@ let saveTimeout = null;
 let saveResult  = 'ok';
 let saving      = false;
 
-const saveSeries = () => {
-  console.log('saving series.json');
-  series.sort((a,b) => {
+const saveConfigYml = () => {
+  console.log('saving config.yml');
+  rejects.sort((a,b) => { 
+    return (a.toLowerCase() > b.toLowerCase() ? +1 : -1);
+  });
+  pickups.sort((a,b) => { 
     const aname = a.replace(/The\s/i, '');
     const bname = b.replace(/The\s/i, '');
     return (aname.toLowerCase() > bname.toLowerCase() ? +1 : -1);
   });
-  fs.writeFileSync('config/series.json', JSON.stringify(series)); 
+  fs.writeFileSync('config/rejects.json', JSON.stringify(rejects)); 
+  fs.writeFileSync('config/pickups.json', JSON.stringify(pickups)); 
   if(saveTimeout) clearTimeout(saveTimeout);
   saveTimeout = setTimeout( async () => {
     saveTimeout = null;
     if(saving) {
-      setTimeout(saveSeries, 10000);
+      setTimeout(saveConfigYml, 10000);
       return;
     }
     saving = true;
@@ -153,14 +172,20 @@ const saveSeries = () => {
   return result;
 };
 
+if(debug) upload(); // doesn't return
+
 //////////////////  EXPRESS SERVER  //////////////////
 
 app.get('/', function (req, res) {
   res.send('invalid url')
 });
 
-app.get('/series.json', function (req, res) {
-  res.send(fs.readFileSync('config/series.json', 'utf8'));
+app.get('/rejects.json', function (req, res) {
+  res.send(fs.readFileSync('config/config2-rejects.json', 'utf8'));
+});
+
+app.get('/pickups.json', function (req, res) {
+  res.send(fs.readFileSync('config/config4-pickups.json', 'utf8'));
 });
 
 app.get('/gapChkStarts.json', function (req, res) {
@@ -180,27 +205,42 @@ app.get('/recentDates', async function (req, res) {
   res.send(str);
 });
 
-app.post('/gapChkStart/:series/:season/:episode', function (req, res) {
-  const {series, season, episode} = req.params;
-  console.log('-- adding gapChkStart', {series, season, episode});
-  gapChkStarts[series] = [season, episode];
+app.post('/gapChkStart/:pickups/:season/:episode', function (req, res) {
+  const {pickups, season, episode} = req.params;
+  console.log('-- adding gapChkStart', {pickups, season, episode});
+  gapChkStarts[pickups] = [season, episode];
   fs.writeFileSync('config/gapChkStarts.json', JSON.stringify(gapChkStarts));
   res.send('OK');
 })
 
-app.post('/pickup/:name', function (req, res) {
+app.post('/rejects/:name', function (req, res) {
   const name = req.params.name;
-  console.log('-- adding series', name);
-  if(!series.includes(name)) series.push(name);
-  res.send(saveSeries());
+  console.log('-- adding rejects', name);
+  if(!rejects.includes(name)) rejects.push(name);
+  res.send(saveConfigYml());
 })
 
-app.delete('/pickup/:name', function (req, res) {
+app.delete('/rejects/:name', function (req, res) {
   const name = req.params.name;
-  console.log('-- deleting series', name);
-  const idx = series.indexOf(name);
-  if (idx !== -1) series.splice(idx, 1);
-  res.send(saveSeries());
+  console.log('-- deleting rejects', name);
+  const idx = rejects.indexOf(name);
+  if (idx !== -1) rejects.splice(idx, 1);
+  res.send(saveConfigYml());
+})
+
+app.post('/pickups/:name', function (req, res) {
+  const name = req.params.name;
+  console.log('-- adding pickups', name);
+  if(!pickups.includes(name)) pickups.push(name);
+  res.send(saveConfigYml());
+})
+
+app.delete('/pickups/:name', function (req, res) {
+  const name = req.params.name;
+  console.log('-- deleting pickups', name);
+  const idx = pickups.indexOf(name);
+  if (idx !== -1) pickups.splice(idx, 1);
+  res.send(saveConfigYml());
 })
 
 app.listen(8734, () => {
