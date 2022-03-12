@@ -1,0 +1,8 @@
+
+    series:
+      settings:
+        group 720i-1080p:
+          exact: yes
+          season_packs: no
+          upgrade: no
+      720i-1080p:
