@@ -33,15 +33,11 @@ const folderDates =  async () => {
     const dir = await readdir('/mnt/media/tv');
     for await (const dirent of dir) {
       const showPath = '/mnt/media/tv/' + dirent;
-      const date     = (await stat(showPath)).birthtime;
-      const year     = date.getFullYear().toString().substring(2);
-      const month    = (date.getMonth()+1).toString().padStart(2, '0');
-      const day      = date.getDate().toString().padStart(2, '0');
-      const hash     = nameHash(dirent);
-      const dateStr  = year + '/' + month + '/' + day;
-      if(hash.length > 7) {
-        dateList[nameHash(dirent)] = dateStr;
-      }
+      const date     = (await stat(showPath)).mtime;
+      const dateStr  = date.toISOString()
+                        .substring(0,10).replace(/-/g, '/');
+      const hash     =  nameHash(dirent);
+      if(hash.length > 7) dateList[hash] = dateStr;
     }
   }
   catch (err) {
@@ -56,23 +52,22 @@ const recentDates =  async () => {
   let errFlg = false;
   const recentDates = {};
   const recurs = async (path) => {
-    // console.log({path, mostRecentDate});
     if(errFlg || path == '/mnt/media/tv/.stfolder') return;
     try {
-      const fstat  = await stat(path);
-      const date   = fstat.birthtime;
-      const year   = date.getFullYear().toString().substring(2);
-      const month  = (date.getMonth()+1).toString().padStart(2, '0');
-      const day    = date.getDate().toString().padStart(2, '0');
-      const dateStr = year + '/' + month + '/' + day;
-      if(dateStr > mostRecentDate) mostRecentDate = dateStr;
-      // console.log({path, fstat, dateStr, mostRecentDate});
+      const fstat = await stat(path);
+      const [sfx] = path.split('.').slice(-1);
+      if(['mkv','flv','vob','avi','mov','wmv','mp4',
+          'mpg','mpeg','m2v','mp2'].includes(sfx)) {
+        console.log('video file',{path, fstat});
+        const dateStr = fstat.mtime.toISOString()
+                        .substring(0,10).replace(/-/g, '/');
+        if(dateStr > '2050') return;
+        if(dateStr > mostRecentDate) mostRecentDate = dateStr;
+      }
       if(fstat.isDirectory()) {
-        // console.log('dir ----- ',{path, mostRecentDate});
-        // path = path.replace(/\/$/, '');
         const dir = await readdir(path);
-        for await (const dirent of dir) {
-          recurs(path + '/' + dirent);
+        for (const dirent of dir) {
+          await recurs(path + '/' + dirent);
         }
       }
     }
@@ -82,13 +77,12 @@ const recentDates =  async () => {
     }
   }
   const dir = await readdir('/mnt/media/tv');
-  for await (const dirent of dir) {
+  for (const dirent of dir) {
     const topLevelPath = '/mnt/media/tv/' + dirent;
-    mostRecentDate = '00/00/00';
+    mostRecentDate = '0000/00/00';
     await recurs(topLevelPath);
     recentDates[nameHash(dirent)] = mostRecentDate;
   }
-  // console.log({recentDates});
   if(errFlg) return {};
   else       return recentDates;
 }
