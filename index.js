@@ -2,6 +2,7 @@ import fs               from "fs";
 import {readdir, stat}  from 'fs/promises';
 import util             from "util";
 import * as cp          from 'child_process';
+import moment           from 'moment';
 import express          from 'express';
 import {createCipheriv} from "crypto";
 
@@ -9,6 +10,9 @@ const debug = false;
 
 const exec = util.promisify(cp.exec);
 const app  = new express();
+
+// const dat = () => typeof(new Date())//.replace(/T|\..*$/, ' ');
+const dat = () => moment().format('MM/DD HH-mm-ss:');
 
 const headerStr = fs.readFileSync('config/config1-header.txt',   'utf8');
 const rejectStr = fs.readFileSync('config/config2-rejects.json', 'utf8');
@@ -43,7 +47,7 @@ const folderDates =  async () => {
   catch (err) {
     console.error(err);
   }
-  // console.log({dateList});
+  // console.log(dat(), {dateList});
   return dateList;
 }
 
@@ -58,7 +62,7 @@ const recentDates =  async () => {
       const [sfx] = path.split('.').slice(-1);
       if(['mkv','flv','vob','avi','mov','wmv','mp4',
           'mpg','mpeg','m2v','mp2'].includes(sfx)) {
-        console.log('video file',{path, fstat});
+        // console.log(dat(), 'video file',{path, fstat});
         const dateStr = fstat.mtime.toISOString()
                         .substring(0,10).replace(/-/g, '/');
         if(dateStr > '2050') return;
@@ -95,10 +99,10 @@ const upload = async () => {
   for(let name of pickups)
     str += '        - "' + name.replace(/"/g, '') + '"\n';
   str += footerStr;
-  console.log('writing config.yml');
+  console.log(dat(), 'writing config.yml');
   fs.writeFileSync('config/config.yml', str);
   if(debug) {
-    console.log("---- debugging: didn't uploaded & exiting ----");
+    console.log(dat(), "---- debugging: didn't uploaded & exiting ----");
     process.exit();
   }
   const {stdout} = await exec(
@@ -107,25 +111,25 @@ const upload = async () => {
   const rx = new RegExp('total size is ([0-9,]*)');
   const matches = rx.exec(stdout);
   if(!matches || parseInt(matches[1].replace(',', '')) < 1000) {
-    console.log('\nERROR: config.yml upload failed\n', stdout, '\n');
+    console.log(dat(), '\nERROR: config.yml upload failed\n', stdout, '\n');
     return `config.yml upload failed: ${stdout}`;
   }
-  console.log('uploaded config.yml, size:', matches[1]);
+  console.log(dat(), 'uploaded config.yml, size:', matches[1]);
   return 'ok';
 }
 
 const reload = async () => {
   if(debug) {
-    console.log("---- debugging: didn't reload ----");
+    console.log(dat(), "---- debugging: didn't reload ----");
     return 'ok';
   }
   const {stdout} = await exec(
     'ssh xobtlu@oracle.usbx.me /home/xobtlu/reload.sh');
   if(!stdout.includes('Config successfully reloaded'))  {
-    console.log('\nERROR: config.yml reload failed\n', stdout, '\n');
+    console.log(dat(), '\nERROR: config.yml reload failed\n', stdout, '\n');
     return `config.yml reload failed: ${stdout}`;
   }
-  console.log('reloaded config.yml');
+  console.log(dat(), 'reloaded config.yml');
   return 'ok';
 }
 
@@ -134,7 +138,7 @@ let saveResult  = 'ok';
 let saving      = false;
 
 const saveConfigYml = () => {
-  console.log('saving config.yml');
+  console.log(dat(), 'saving config.yml');
   rejects.sort((a,b) => { 
     return (a.toLowerCase() > b.toLowerCase() ? +1 : -1);
   });
@@ -183,25 +187,25 @@ app.get('/pickups.json', function (req, res) {
 });
 
 app.get('/gapChkStarts.json', function (req, res) {
-  // console.log('get',{gapChkStarts:JSON.stringify(gapChkStarts)});
+  // console.log(dat(), 'get',{gapChkStarts:JSON.stringify(gapChkStarts)});
   res.send(JSON.stringify(gapChkStarts));
 });
 
 app.get('/folderDates', async function (req, res) {
   const str = JSON.stringify(await folderDates());
-  // console.log(str);
+  // console.log(dat(), str);
   res.send(str);
 });
 
 app.get('/recentDates', async function (req, res) {
   const str = JSON.stringify(await recentDates());
-  // console.log(str);
+  // console.log(dat(), str);
   res.send(str);
 });
 
 app.post('/gapChkStart/:pickups/:season/:episode', function (req, res) {
   const {pickups, season, episode} = req.params;
-  console.log('-- adding gapChkStart', {pickups, season, episode});
+  console.log(dat(), '-- adding gapChkStart', {pickups, season, episode});
   gapChkStarts[pickups] = [season, episode];
   fs.writeFileSync('config/gapChkStarts.json', JSON.stringify(gapChkStarts));
   res.send('OK');
@@ -209,14 +213,14 @@ app.post('/gapChkStart/:pickups/:season/:episode', function (req, res) {
 
 app.post('/rejects/:name', function (req, res) {
   const name = req.params.name;
-  console.log('-- adding rejects', name);
+  console.log(dat(), '-- adding rejects', name);
   if(!rejects.includes(name)) rejects.push(name);
   res.send(saveConfigYml());
 })
 
 app.delete('/rejects/:name', function (req, res) {
   const name = req.params.name;
-  console.log('-- deleting rejects', name);
+  console.log(dat(), '-- deleting rejects', name);
   const idx = rejects.indexOf(name);
   if (idx !== -1) rejects.splice(idx, 1);
   res.send(saveConfigYml());
@@ -224,19 +228,19 @@ app.delete('/rejects/:name', function (req, res) {
 
 app.post('/pickups/:name', function (req, res) {
   const name = req.params.name;
-  console.log('-- adding pickups', name);
+  console.log(dat(), '-- adding pickups', name);
   if(!pickups.includes(name)) pickups.push(name);
   res.send(saveConfigYml());
 })
 
 app.delete('/pickups/:name', function (req, res) {
   const name = req.params.name;
-  console.log('-- deleting pickups', name);
+  console.log(dat(), '-- deleting pickups', name);
   const idx = pickups.indexOf(name);
   if (idx !== -1) pickups.splice(idx, 1);
   res.send(saveConfigYml());
 })
 
 app.listen(8734, () => {
-  console.log('server listening on port 8734');
+  console.log(dat(), 'server listening on port 8734');
 })

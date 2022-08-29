@@ -1,2 +1,3 @@
-pkill -f "nodemon index.js"
-nodemon index.js
+# /root/dev/apps/tv-maint-srvr/run
+cd /root/dev/apps/tv-maint-srvr
+pm2 start index.js --watch --name tv-maint
