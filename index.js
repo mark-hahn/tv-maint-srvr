@@ -101,8 +101,8 @@ const upload = async () => {
   console.log(dat(), 'writing config.yml');
   fs.writeFileSync('config/config.yml', str);
   if(debug) {
-    console.log(dat(), "---- debugging: didn't uploaded & exiting ----");
-    process.exit();
+    console.log(dat(), "---- debugging: didn't upload ----");
+    return 'ok';
   }
   const {stdout} = await exec(
           'rsync -av config/config.yml xobtlu@oracle.usbx.me:' +
@@ -146,8 +146,8 @@ const saveConfigYml = () => {
     const bname = b.replace(/The\s/i, '');
     return (aname.toLowerCase() > bname.toLowerCase() ? +1 : -1);
   });
-  fs.writeFileSync('config/rejects.json', JSON.stringify(rejects)); 
-  fs.writeFileSync('config/pickups.json', JSON.stringify(pickups)); 
+  fs.writeFileSync('config/config2-rejects.json', JSON.stringify(rejects)); 
+  fs.writeFileSync('config/config4-pickups.json', JSON.stringify(pickups)); 
   if(saveTimeout) clearTimeout(saveTimeout);
   saveTimeout = setTimeout( async () => {
     saveTimeout = null;
@@ -169,7 +169,8 @@ const saveConfigYml = () => {
   return result;
 };
 
-if(debug) upload(); // doesn't return
+if(debug) upload();
+
 
 //////////////////  EXPRESS SERVER  //////////////////
 
@@ -227,17 +228,32 @@ app.delete('/rejects/:name', function (req, res) {
 
 app.post('/pickups/:name', function (req, res) {
   const name = req.params.name;
-  console.log(dat(), '-- adding pickups', name);
-  if(!pickups.includes(name)) pickups.push(name);
+  for(const [idx, pickupNameStr] of pickups.entries()) {
+    if(pickupNameStr.toLowerCase() === name.toLowerCase()) {
+      console.log(dat(), '-- removing old matching pickup:', pickupNameStr);
+      pickups.splice(idx, 1);
+    }
+  }
+  console.log(dat(), '-- adding pickup:', name);
+  pickups.push(name);
   res.send(saveConfigYml());
 })
 
 app.delete('/pickups/:name', function (req, res) {
   const name = req.params.name;
-  console.log(dat(), '-- deleting pickups', name);
-  const idx = pickups.indexOf(name);
-  if (idx !== -1) pickups.splice(idx, 1);
-  res.send(saveConfigYml());
+  let deletedOne = false;
+  for(const [idx, pickupNameStr] of pickups.entries()) {
+    if(pickupNameStr.toLowerCase() === name.toLowerCase()) {
+      console.log(dat(), '-- deleting pickup:', pickupNameStr);
+      pickups.splice(idx, 1);
+      deletedOne = true;
+    }
+  }
+  if(!deletedOne) {
+    console.log(dat(), '-- pickup not deleted -- no match:', name);
+    res.send('ok');
+  }
+  else res.send(saveConfigYml());
 })
 
 app.listen(8734, () => {
