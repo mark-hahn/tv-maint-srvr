@@ -1,3 +1,4 @@
 # /root/dev/apps/tv-maint-srvr/run
 cd /root/dev/apps/tv-maint-srvr
-pm2 start index.js --watch --name tv-maint
+# pm2 start index.js -f --watch --name tv-maint
+pm2 start index.js --name tv-maint
