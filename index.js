@@ -213,17 +213,32 @@ app.post('/gapChkStart/:pickups/:season/:episode', function (req, res) {
 
 app.post('/rejects/:name', function (req, res) {
   const name = req.params.name;
-  console.log(dat(), '-- adding rejects', name);
-  if(!rejects.includes(name)) rejects.push(name);
+  for(const [idx, rejectNameStr] of rejects.entries()) {
+    if(rejectNameStr.toLowerCase() === name.toLowerCase()) {
+      console.log(dat(), '-- removing old matching reject:', rejectNameStr);
+      rejects.splice(idx, 1);
+    }
+  }
+  console.log(dat(), '-- adding reject:', name);
+  rejects.push(name);
   res.send(saveConfigYml());
 })
 
 app.delete('/rejects/:name', function (req, res) {
   const name = req.params.name;
-  console.log(dat(), '-- deleting rejects', name);
-  const idx = rejects.indexOf(name);
-  if (idx !== -1) rejects.splice(idx, 1);
-  res.send(saveConfigYml());
+  let deletedOne = false;
+  for(const [idx, rejectNameStr] of rejects.entries()) {
+    if(rejectNameStr.toLowerCase() === name.toLowerCase()) {
+      console.log(dat(), '-- deleting reject:', rejectNameStr);
+      rejects.splice(idx, 1);
+      deletedOne = true;
+    }
+  }
+  if(!deletedOne) {
+    console.log(dat(), '-- reject not deleted -- no match:', name);
+    res.send('ok');
+  }
+  else res.send(saveConfigYml());
 })
 
 app.post('/pickups/:name', function (req, res) {
