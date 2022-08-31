@@ -1,0 +1,341 @@
+
+templates:
+  tv:
+    regexp:
+      reject:
+        - 9JKL
+        - ^Babylon
+        - Apocalypse.Code.The.Bible.Prediction
+        - Baskets
+        - Castle Builders
+        - Class Act
+        - complete
+        - DC's Legends of Tomorrow
+        - Drunk History UK
+        - Easy Japanese
+        - farsi
+        - flemish
+        - Gotham Comedy Live
+        - italian
+        - Lacheys Bar
+        - Legends of Tomorrow
+        - Married At First Sight
+        - Married To Medicine
+        - Married to Real Estate
+        - Oprah Behind The Scenes
+        - Rehab Addict
+        - s01-02
+        - s01-03
+        - s02-03
+        - s1-s2
+        - s1-s3
+        - s2-s3
+        - season
+        - spanish
+        - The Champions
+        - The Great Pottery Throw Down
+        - uin.15
+        - Uncle from Another World
+        - Uncle Grandpa
+        - Undercover Boss
+        - Undercover High
+        - Undercover In Nederland
+        - White Collar Brawlers
+
+    series:
+      settings:
+        group 720i-1080p:
+          exact: yes
+          season_packs: no
+          upgrade: no
+      720i-1080p:
+        - "Abbott Elementary"
+        - "The Afterparty"
+        - "Aftertaste"
+        - "Amsterdam Vice"
+        - "Anxious People"
+        - "Any Day Now"
+        - "Archer (2009)"
+        - "Around the World in 80 Days (2021)"
+        - "The Artists"
+        - "B Positive"
+        - "Back to Life"
+        - "Bad Education"
+        - "Bad Sisters"
+        - "Barry"
+        - "The Bear"
+        - "Better Things"
+        - "Billy & Billie"
+        - "Black Mirror"
+        - "Black Monday"
+        - "Bless This Mess"
+        - "Bloods"
+        - "Bob Hearts Abishola"
+        - "Bob's Burgers"
+        - "Bosch"
+        - "Bosch: Legacy"
+        - "Brassic"
+        - "Broadchurch"
+        - "Brockmire"
+        - "Brotherhood"
+        - "Buffering"
+        - "Bust Down"
+        - "Call Me Kat"
+        - "Calls"
+        - "Cat Burglar"
+        - "Cheaters"
+        - "Cheaters (2022)"
+        - "Chivalry"
+        - "Chloe"
+        - "The Cleaner (2021)"
+        - "Code 404"
+        - "Comedians in Cars Getting Coffee"
+        - "The Control Room"
+        - "The Cool Kids"
+        - "Corporate"
+        - "Cowboy Bebop"
+        - "Criminal: United Kingdom"
+        - "Crisis"
+        - "Cruel Summer"
+        - "Culprits"
+        - "The Curse"
+        - "Dead Canny"
+        - "Dead Pixels"
+        - "Dead to Me"
+        - "Deadwater Fell"
+        - "Deep Heat"
+        - "Delicious"
+        - "The Delivery Man"
+        - "The Detour"
+        - "Disenchantment"
+        - "Disjointed"
+        - "Doctor Who (2005)"
+        - "Documentary Now!"
+        - "The Dress Up Gang"
+        - "Drifters"
+        - "Drunk History"
+        - "Dummy"
+        - "The End of the F***ing World"
+        - "Family Guy"
+        - "Fargo"
+        - "The Fast Show"
+        - "Finding Alice"
+        - "Five Bedrooms"
+        - "The Flight Attendant"
+        - "Flowers"
+        - "Free Agents"
+        - "Fresh Meat"
+        - "GameFace"
+        - "Gentleman Jack"
+        - "Get Shorty"
+        - "Ghosts (2019)"
+        - "Ghosts (US)"
+        - "The Girl Before"
+        - "Girlboss"
+        - "God's Favorite Idiot"
+        - "Goliath"
+        - "Good Grief (2021)"
+        - "Grace and Frankie"
+        - "Gracepoint"
+        - "The Great"
+        - "Grimsburg"
+        - "Ground Floor"
+        - "Guilt (2019)"
+        - "Hacks (2021)"
+        - "Hang Ups"
+        - "Harley Quinn"
+        - "Harrow"
+        - "Here We Go (2022)"
+        - "Hitmen"
+        - "Hold The Sunset"
+        - "Homecoming"
+        - "How To with John Wilson"
+        - "Hunderby"
+        - "Hung Out To Dry"
+        - "I Am Not Okay With This"
+        - "I Hate Suzie"
+        - "I Love That for You"
+        - "I Think You Should Leave with Tim Robinson"
+        - "I Want My Wife Back"
+        - "Idiotsitter"
+        - "Imposters"
+        - "Inbetweeners"
+        - "Inside Amy Schumer"
+        - "Inside No. 9"
+        - "It's Always Sunny in Philadelphia"
+        - "Joe Pera Talks with You"
+        - "Justified"
+        - "Kate & Koji"
+        - "Kevin Can F**k Himself"
+        - "Killing Eve"
+        - "Killing It (2022)"
+        - "Krapopolis"
+        - "Lady Dynamite"
+        - "Landscapers"
+        - "Last Tango in Halifax"
+        - "Liar"
+        - "Life & Beth"
+        - "Life Sentence"
+        - "Lifeguards"
+        - "Living with Yourself"
+        - "Love"
+        - "Love Life (2020)"
+        - "Made For Love"
+        - "Making History"
+        - "Man Stroke Woman"
+        - "Maniac (2018)"
+        - "Married"
+        - "Martin Fishback"
+        - "Master of None"
+        - "Maybe It's Me"
+        - "Medical Police"
+        - "Meet the Richardsons"
+        - "The Mick"
+        - "Midnight, Texas"
+        - "Minx"
+        - "Miranda"
+        - "Modern Love"
+        - "The Moodys (US)"
+        - "The Morning Show"
+        - "Mrs. Fletcher"
+        - "Murder City"
+        - "murderville"
+        - "My Boys"
+        - "My Family"
+        - "The Neighborhood"
+        - "Never Have I Ever"
+        - "Newsreaders"
+        - "Night Court"
+        - "Nine Perfect Strangers"
+        - "No Offence"
+        - "Normal People"
+        - "Not Going Out"
+        - "Now Apocalypse"
+        - "The Old Man"
+        - "Only Murders in the Building"
+        - "The Orville"
+        - "The Other Half"
+        - "The Other One (2020)"
+        - "The Other Two"
+        - "Our Cartoon President"
+        - "Our Flag Means Death"
+        - "The Outlaws"
+        - "Ozark"
+        - "Peacock"
+        - "Peep Show"
+        - "People of Earth"
+        - "Peter Kay's Car Share"
+        - "Pivoting"
+        - "The Politician"
+        - "Powerless"
+        - "Psychobitches"
+        - "Pulling"
+        - "The Real O'Neals"
+        - "Reno 911!"
+        - "Reservation Dogs"
+        - "Resident Advisors"
+        - "Resident Alien"
+        - "The Resort"
+        - "The Righteous Gemstones"
+        - "Ringer"
+        - "Robot Chicken"
+        - "Russell Howard's Good News"
+        - "Russian Doll"
+        - "Sanditon"
+        - "Santa Clarita Diet"
+        - "Scarborough"
+        - "Severance"
+        - "Sex Education"
+        - "The Sex Lives of College Girls"
+        - "Shakespeare & Hathaway - Private Investigators"
+        - "Shakespeare And Hathaway"
+        - "Shrink"
+        - "Siblings"
+        - "Sick Note"
+        - "Silicon Valley (2013)"
+        - "The Sinner"
+        - "Slow Horses"
+        - "Smiling Friends"
+        - "Sneakerhead"
+        - "Somebody Somewhere"
+        - "South Park"
+        - "The South Westerlies"
+        - "Space Force"
+        - "Splitting Up Together"
+        - "Sprung"
+        - "Staged"
+        - "Starstruck"
+        - "State of the Union"
+        - "The Strange World of Gurney Slade"
+        - "Sunny D"
+        - "Sunnyside"
+        - "Ted Lasso"
+        - "Ten Percent"
+        - "This Way Up"
+        - "Timewasters"
+        - "Toast"
+        - "Toast of America"
+        - "Toast of Tinseltown"
+        - "Tokyo Vice"
+        - "Truth Be Told (2019)"
+        - "Trying"
+        - "Two Pints: Last Orders"
+        - "Two Weeks to Live"
+        - "Uncle"
+        - "The Undoing"
+        - "Unforgotten"
+        - "The Unicorn"
+        - "United States of Al"
+        - "Upload"
+        - "Upright"
+        - "Urban Myths"
+        - "Utopia"
+        - "Vice Principals"
+        - "WandaVision"
+        - "Wannabe"
+        - "Weird Loners"
+        - "Wet Hot American Summer"
+        - "What We Do in the Shadows"
+        - "What Would Diplo Do"
+        - "White Gold"
+        - "The White Lotus"
+        - "Why Women Kill"
+        - "The Witchfinder"
+        - "Witless"
+        - "Woke"
+        - "Wolf Like Me"
+        - "The Woman in the House Across the Street from the Girl in the Window"
+        - "Workaholics"
+        - "Workin' Moms"
+        - "The Worst Week of My Life"
+        - "Wrecked "
+        - "Wrecked (2016)"
+        - "You're the Worst"
+        - "The Young Offenders"
+
+    transmission:
+      username: xobtlu
+      password: "90-BNMoiuxcv"
+      port: 12010
+
+schedules:
+  - tasks: '*'
+    interval:
+      minutes: 15
+
+tasks:
+  ipt:
+    rss: https://iptorrents.com/t.rss?u=1961978;tp=44462d6cdc795cb9204c454f38785dcd;78;23;24;25;66;82;65;83;79;22;5;99;4;download;new
+    template: tv
+    content_size:
+      min: 12
+      max: 2000
+      strict: no
+
+  tl:
+    rss: https://rss24h.torrentleech.org/23b3105eda2478749d21
+    template: tv
+    content_size:
+      min: 12
+      max: 2000
+      strict: no
