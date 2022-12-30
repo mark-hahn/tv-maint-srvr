@@ -3,44 +3,47 @@ templates:
   tv:
     regexp:
       reject:
-        - 9JKL
-        - ^Babylon
-        - Apocalypse.Code.The.Bible.Prediction
-        - Baskets
-        - Castle Builders
-        - Class Act
-        - complete
-        - DC's Legends of Tomorrow
-        - Drunk History UK
-        - Easy Japanese
-        - farsi
-        - flemish
-        - Gotham Comedy Live
-        - italian
-        - Lacheys Bar
-        - Legends of Tomorrow
-        - Married At First Sight
-        - Married To Medicine
-        - Married to Real Estate
-        - Oprah Behind The Scenes
-        - Rehab Addict
-        - s01-02
-        - s01-03
-        - s02-03
-        - s1-s2
-        - s1-s3
-        - s2-s3
-        - season
-        - spanish
-        - The Champions
-        - The Great Pottery Throw Down
-        - uin.15
-        - Uncle from Another World
-        - Uncle Grandpa
-        - Undercover Boss
-        - Undercover High
-        - Undercover In Nederland
-        - White Collar Brawlers
+        - "9JKL"
+        - "^Babylon"
+        - "Apocalypse.Code.The.Bible.Prediction"
+        - "Baskets"
+        - "Castle Builders"
+        - "Class Act"
+        - "complete"
+        - "DC's Legends of Tomorrow"
+        - "Drunk History UK"
+        - "Easy Japanese"
+        - "farsi"
+        - "flemish"
+        - "Gotham Comedy Live"
+        - "italian"
+        - "Lacheys Bar"
+        - "Legends of Tomorrow"
+        - "Married At First Sight"
+        - "Married To Medicine"
+        - "Married to Real Estate"
+        - "Motherland: Fort Salem"
+        - "Oprah Behind The Scenes"
+        - "Rehab Addict"
+        - "s01-02"
+        - "s01-03"
+        - "s02-03"
+        - "s1-s2"
+        - "s1-s3"
+        - "s2-s3"
+        - "season"
+        - "spanish"
+        - "The Champions"
+        - "The Curse of Oak Island"
+        - "The Great Canadian Baking Show"
+        - "The Great Pottery Throw Down"
+        - "uin.15"
+        - "Uncle from Another World"
+        - "Uncle Grandpa"
+        - "Undercover Boss"
+        - "Undercover High"
+        - "Undercover In Nederland"
+        - "White Collar Brawlers"
 
     series:
       settings:
@@ -53,6 +56,7 @@ templates:
         - "The Afterparty"
         - "Aftertaste"
         - "Amsterdam Vice"
+        - "Animal Control"
         - "Anxious People"
         - "Any Day Now"
         - "Archer (2009)"
@@ -69,7 +73,6 @@ templates:
         - "Black Mirror"
         - "Black Monday"
         - "Bless This Mess"
-        - "Bloods"
         - "Bob Hearts Abishola"
         - "Bob's Burgers"
         - "Bosch"
@@ -93,14 +96,16 @@ templates:
         - "The Control Room"
         - "The Cool Kids"
         - "Corporate"
+        - "Counterpart"
         - "Cowboy Bebop"
         - "Criminal: United Kingdom"
         - "Crisis"
-        - "Cruel Summer"
         - "Culprits"
         - "The Curse"
+        - "Dead Boss"
         - "Dead Canny"
         - "Dead Pixels"
+        - "Dead Set"
         - "Dead to Me"
         - "Deadwater Fell"
         - "Deep Heat"
@@ -116,6 +121,7 @@ templates:
         - "Drunk History"
         - "Dummy"
         - "The End of the F***ing World"
+        - "The English"
         - "Family Guy"
         - "Fargo"
         - "The Fast Show"
@@ -123,11 +129,13 @@ templates:
         - "Five Bedrooms"
         - "The Flight Attendant"
         - "Flowers"
+        - "Frank of Ireland"
         - "Free Agents"
         - "Fresh Meat"
         - "GameFace"
         - "Gentleman Jack"
         - "Get Shorty"
+        - "Ghosted"
         - "Ghosts (2019)"
         - "Ghosts (US)"
         - "The Girl Before"
@@ -143,11 +151,14 @@ templates:
         - "Guilt (2019)"
         - "Hacks (2021)"
         - "Hang Ups"
+        - "Happy Valley"
         - "Harley Quinn"
         - "Harrow"
+        - "Heartbreak High (2022)"
+        - "Heartburn Hotel"
         - "Here We Go (2022)"
         - "Hitmen"
-        - "Hold The Sunset"
+        - "Hold the Sunset"
         - "Homecoming"
         - "How To with John Wilson"
         - "Hunderby"
@@ -159,8 +170,9 @@ templates:
         - "I Want My Wife Back"
         - "Idiotsitter"
         - "Imposters"
-        - "Inbetweeners"
+        - "The Inbetweeners"
         - "Inside Amy Schumer"
+        - "Inside Man (2022)"
         - "Inside No. 9"
         - "It's Always Sunny in Philadelphia"
         - "Joe Pera Talks with You"
@@ -174,6 +186,7 @@ templates:
         - "Landscapers"
         - "Last Tango in Halifax"
         - "Liar"
+        - "The Librarians (2014)"
         - "Life & Beth"
         - "Life Sentence"
         - "Lifeguards"
@@ -181,8 +194,11 @@ templates:
         - "Love"
         - "Love Life (2020)"
         - "Made For Love"
+        - "Magpie Murders"
         - "Making History"
+        - "Mammals"
         - "Man Stroke Woman"
+        - "Mandy"
         - "Maniac (2018)"
         - "Married"
         - "Martin Fishback"
@@ -209,7 +225,6 @@ templates:
         - "Nine Perfect Strangers"
         - "No Offence"
         - "Normal People"
-        - "Not Going Out"
         - "Now Apocalypse"
         - "The Old Man"
         - "Only Murders in the Building"
@@ -217,10 +232,10 @@ templates:
         - "The Other Half"
         - "The Other One (2020)"
         - "The Other Two"
-        - "Our Cartoon President"
         - "Our Flag Means Death"
         - "The Outlaws"
         - "Ozark"
+        - "Patrick Melrose"
         - "Peacock"
         - "Peep Show"
         - "People of Earth"
@@ -230,18 +245,21 @@ templates:
         - "Powerless"
         - "Psychobitches"
         - "Pulling"
+        - "Ramy"
         - "The Real O'Neals"
+        - "Reboot (2022)"
+        - "Reginald the Vampire"
         - "Reno 911!"
         - "Reservation Dogs"
         - "Resident Advisors"
         - "Resident Alien"
         - "The Resort"
+        - "Rick and Morty"
         - "The Righteous Gemstones"
         - "Ringer"
         - "Robot Chicken"
         - "Russell Howard's Good News"
         - "Russian Doll"
-        - "Sanditon"
         - "Santa Clarita Diet"
         - "Scarborough"
         - "Severance"
@@ -249,6 +267,7 @@ templates:
         - "The Sex Lives of College Girls"
         - "Shakespeare & Hathaway - Private Investigators"
         - "Shakespeare And Hathaway"
+        - "Shining Vale"
         - "Shrink"
         - "Siblings"
         - "Sick Note"
@@ -257,6 +276,7 @@ templates:
         - "Slow Horses"
         - "Smiling Friends"
         - "Sneakerhead"
+        - "So Help Me Todd"
         - "Somebody Somewhere"
         - "South Park"
         - "The South Westerlies"
@@ -271,12 +291,14 @@ templates:
         - "Sunnyside"
         - "Ted Lasso"
         - "Ten Percent"
+        - "This Fool"
         - "This Way Up"
         - "Timewasters"
         - "Toast"
         - "Toast of America"
         - "Toast of Tinseltown"
         - "Tokyo Vice"
+        - "The Trip"
         - "Truth Be Told (2019)"
         - "Trying"
         - "Two Pints: Last Orders"
@@ -293,10 +315,11 @@ templates:
         - "Vice Principals"
         - "WandaVision"
         - "Wannabe"
+        - "Wedding Season"
         - "Weird Loners"
+        - "Welcome to Flatch"
         - "Wet Hot American Summer"
         - "What We Do in the Shadows"
-        - "What Would Diplo Do"
         - "White Gold"
         - "The White Lotus"
         - "Why Women Kill"
@@ -310,6 +333,8 @@ templates:
         - "The Worst Week of My Life"
         - "Wrecked "
         - "Wrecked (2016)"
+        - "The Wrong Mans"
+        - "Yonderland"
         - "You're the Worst"
         - "The Young Offenders"
 

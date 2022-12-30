@@ -93,7 +93,7 @@ const recentDates =  async () => {
 const upload = async () => {
   let str = headerStr;
   for(let name of rejects)
-    str += `        - ${name}\n`;
+    str += '        - "' + name.replace(/"/g, '') + '"\n';
   str += middleStr;
   for(let name of pickups)
     str += '        - "' + name.replace(/"/g, '') + '"\n';
