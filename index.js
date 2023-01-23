@@ -52,6 +52,7 @@ const folderDates =  async () => {
 
 const recentDates =  async () => {
   let mostRecentDate;
+  let dirSize;
   let errFlg = false;
   const recentDates = {};
   const recurs = async (path) => {
@@ -59,14 +60,17 @@ const recentDates =  async () => {
     try {
       const fstat = await stat(path);
       const [sfx] = path.split('.').slice(-1);
+      dirSize += fstat.size;
+
       if(['mkv','flv','vob','avi','mov','wmv','mp4',
           'mpg','mpeg','m2v','mp2'].includes(sfx)) {
-        // console.log(dat(), 'video file',{path, fstat});
+        console.log(dat(), 'video file',{path, fstat});
         const dateStr = fstat.mtime.toISOString()
                         .substring(0,10).replace(/-/g, '/');
         if(dateStr > '2050') return;
         if(dateStr > mostRecentDate) mostRecentDate = dateStr;
       }
+
       if(fstat.isDirectory()) {
         const dir = await readdir(path);
         for (const dirent of dir) {
@@ -83,8 +87,11 @@ const recentDates =  async () => {
   for (const dirent of dir) {
     const topLevelPath = '/mnt/media/tv/' + dirent;
     mostRecentDate = '0000/00/00';
+    dirSize = 0;
     await recurs(topLevelPath);
-    recentDates[nameHash(dirent)] = mostRecentDate;
+    // console.log({dirent, mostRecentDate, dirSize});
+    // process.exit();
+    recentDates[nameHash(dirent)] = mostRecentDate + '|' + dirSize;
   }
   if(errFlg) return {};
   else       return recentDates;
@@ -199,7 +206,7 @@ app.get('/folderDates', async function (req, res) {
 
 app.get('/recentDates', async function (req, res) {
   const str = JSON.stringify(await recentDates());
-  // console.log(dat(), str);
+  fs.writeFileSync('recentDates-dbg.json', str);
   res.send(str);
 });
 
@@ -209,6 +216,20 @@ app.post('/gapChkStart/:pickups/:season/:episode', function (req, res) {
   gapChkStarts[pickups] = [season, episode];
   fs.writeFileSync('config/gapChkStarts.json', JSON.stringify(gapChkStarts));
   res.send('OK');
+})
+
+app.get('/deleteFile/:path', function (req, res) {
+  let {path} = req.params;
+  path = decodeURI(path).replace(/`/g, '/');
+  console.log(dat(), '-- deleting', {path});
+  let resStr = '{"status":"ok"}';
+  try { 
+    fs.unlinkSync(path); 
+  }
+  catch(e) {
+    resStr = '{"status":"' + e.message.replace(/"/g, "'") + '"}';
+  }
+  res.send(resStr);
 })
 
 app.post('/rejects/:name', function (req, res) {

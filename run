@@ -1,6 +1,6 @@
 # /root/dev/apps/tv-maint-srvr/run
 cd /root/dev/apps/tv-maint-srvr
-# pm2 start index.js -f --watch --name tv-maint
+# node index.js
 pm2 del all
 pm2 start index.js -f --name tv-maint
 pm2 list
