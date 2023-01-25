@@ -220,10 +220,15 @@ app.post('/gapChkStart/:pickups/:season/:episode', function (req, res) {
 
 app.get('/deleteFile/:path', function (req, res) {
   let {path} = req.params;
+  if(path === 'undefined') {
+    res.send('{"status":"skipping delete of undefined path"}');
+    return;
+  }
   path = decodeURI(path).replace(/`/g, '/');
   console.log(dat(), '-- deleting', {path});
   let resStr = '{"status":"ok"}';
   try { 
+    // console.log('test delete:', path);
     fs.unlinkSync(path); 
   }
   catch(e) {
