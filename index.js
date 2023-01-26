@@ -237,6 +237,53 @@ app.get('/deleteFile/:path', function (req, res) {
   res.send(resStr);
 })
 
+// --- cleanFiles cannot work without parsing episode number ---
+// app.get('/cleanFiles/:path', async function (req, res) {
+//   let {path} = req.params;
+//   if(path === 'undefined') {
+//     console.log('skipping cleanfiles of undefined path');
+//     res.send('{"status":"skipping cleanfiles of undefined path"}');
+//     return;
+//   }
+//   path = decodeURI(path).replace(/`/g, '/');
+//   const dirpath  = path.substring(0, path.lastIndexOf('/'));
+//   const fileName = path.substring(path.lastIndexOf('/')+1);
+
+//   // console.log('-- cleanFiles', {dirpath, fileName});
+//   try {
+//     const fstat = await stat(dirpath);
+//     if(!fstat.isDirectory()) {
+//       console.log('dirPath not a directory', {dirpath});
+//       return '{"status":"dirPath not a directory"}';
+//     }
+//     const dir = await readdir(dirpath);
+//     for (const file of dir) {
+//       for(const sfx of ['.mkv','.flv','.vob','.avi','.mov','.wmv','.mp4',
+//           '.mpg','.mpeg','.m2v','.mp2',
+//           '.MKV','.FLV','.VOB','.AVI','.MOV','.WMV','.MP4',
+//           '.MPG','.MPEG','.M2V','.MP2']) {
+//         if(file.endsWith(sfx)) {
+//           if(file !== fileName)
+//             console.log('deleting duplicate video file: ', {file});
+//             try { 
+//               fs.unlinkSync(dirpath + '/' + file); 
+//             }
+//             catch(e) {
+//               res.send(`{"status":"del error, ${e.message}, ${path}"}`);
+//               return;
+//             }
+//         }
+//       }
+//     }
+//   }
+//   catch (err) {
+//     console.error(err);
+//     res.send(`{"status":"cleanFiles try error, ${err.message}"}`);
+//     return;
+//   }
+//   res.send('{"status":"ok"}');
+// })
+
 app.post('/rejects/:name', function (req, res) {
   const name = req.params.name;
   for(const [idx, rejectNameStr] of rejects.entries()) {
