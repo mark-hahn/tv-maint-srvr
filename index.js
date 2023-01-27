@@ -18,11 +18,9 @@ const rejectStr = fs.readFileSync('config/config2-rejects.json', 'utf8');
 const middleStr = fs.readFileSync('config/config3-middle.txt',   'utf8');
 const pickupStr = fs.readFileSync('config/config4-pickups.json', 'utf8');
 const footerStr = fs.readFileSync('config/config5-footer.txt',   'utf8');
-const gapsStr   = fs.readFileSync('config/gapChkStarts.json',    'utf8');
 
 const rejects      = JSON.parse(rejectStr);
 const pickups      = JSON.parse(pickupStr);
-const gapChkStarts = JSON.parse(gapsStr);
 
 const nameHash = (name) =>
   ('name-' + name
@@ -193,11 +191,6 @@ app.get('/pickups.json', function (req, res) {
   res.send(fs.readFileSync('config/config4-pickups.json', 'utf8'));
 });
 
-app.get('/gapChkStarts.json', function (req, res) {
-  // console.log(dat(), 'get',{gapChkStarts:JSON.stringify(gapChkStarts)});
-  res.send(JSON.stringify(gapChkStarts));
-});
-
 app.get('/folderDates', async function (req, res) {
   const str = JSON.stringify(await folderDates());
   // console.log(dat(), str);
@@ -209,14 +202,6 @@ app.get('/recentDates', async function (req, res) {
   fs.writeFileSync('recentDates-dbg.json', str);
   res.send(str);
 });
-
-app.post('/gapChkStart/:pickups/:season/:episode', function (req, res) {
-  const {pickups, season, episode} = req.params;
-  console.log(dat(), '-- adding gapChkStart', {pickups, season, episode});
-  gapChkStarts[pickups] = [season, episode];
-  fs.writeFileSync('config/gapChkStarts.json', JSON.stringify(gapChkStarts));
-  res.send('OK');
-})
 
 app.get('/deleteFile/:path', function (req, res) {
   let {path} = req.params;
