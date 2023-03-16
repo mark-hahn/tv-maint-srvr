@@ -2,6 +2,6 @@
 cd /root/dev/apps/tv-maint-srvr
 # node index.js
 pm2 del all
-pm2 start index.js -f --name tv-maint
+pm2 start index.js --watch index.js -f --name tv-maint
 pm2 list
-pm2 logs
+pm2 --time --lines 8 logs

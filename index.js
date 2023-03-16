@@ -6,6 +6,7 @@ import moment           from 'moment';
 import express          from 'express';
 
 const debug = false;
+const tvDir = '/mnt/media/tv';
 
 const exec = util.promisify(cp.exec);
 const app  = new express();
@@ -31,9 +32,9 @@ const nameHash = (name) =>
 const folderDates =  async () => {
   const dateList = {};
   try {
-    const dir = await readdir('/mnt/media/tv');
+    const dir = await readdir(tvDir);
     for await (const dirent of dir) {
-      const showPath = '/mnt/media/tv/' + dirent;
+      const showPath = tvDir + '/' + dirent;
       const date     = (await stat(showPath)).mtime;
       const dateStr  = date.toISOString()
                         .substring(0,10).replace(/-/g, '/');
@@ -54,7 +55,7 @@ const recentDates =  async () => {
   let errFlg = false;
   const recentDates = {};
   const recurs = async (path) => {
-    if(errFlg || path == '/mnt/media/tv/.stfolder') return;
+    if(errFlg || path == tvDir + '/.stfolder') return;
     try {
       const fstat = await stat(path);
       const [sfx] = path.split('.').slice(-1);
@@ -62,7 +63,7 @@ const recentDates =  async () => {
 
       if(['mkv','flv','vob','avi','mov','wmv','mp4',
           'mpg','mpeg','m2v','mp2'].includes(sfx)) {
-        console.log(dat(), 'video file',{path, fstat});
+        // console.log(dat(), 'video file',{path, fstat});
         const dateStr = fstat.mtime.toISOString()
                         .substring(0,10).replace(/-/g, '/');
         if(dateStr > '2050') return;
@@ -81,9 +82,9 @@ const recentDates =  async () => {
       errFlg = true;
     }
   }
-  const dir = await readdir('/mnt/media/tv');
+  const dir = await readdir(tvDir);
   for (const dirent of dir) {
-    const topLevelPath = '/mnt/media/tv/' + dirent;
+    const topLevelPath = tvDir + '/' + dirent;
     mostRecentDate = '0000/00/00';
     dirSize = 0;
     await recurs(topLevelPath);
@@ -205,19 +206,20 @@ app.get('/recentDates', async function (req, res) {
 
 app.get('/deleteFile/:path', function (req, res) {
   let {path} = req.params;
+  console.log('deleting file', path);
+  res.send(`deleting file ${path}`);
   if(path === 'undefined') {
     res.send('{"status":"skipping delete of undefined path"}');
     return;
   }
   path = decodeURI(path).replace(/`/g, '/');
-  console.log(dat(), '-- deleting', {path});
-  let resStr = '{"status":"ok"}';
+  let resStr = `{"status":"ok", "path":"${path}"}`;
   try { 
     // console.log('test delete:', path);
     fs.unlinkSync(path); 
   }
   catch(e) {
-    resStr = '{"status":"' + e.message.replace(/"/g, "'") + '"}';
+    resStr = `{"status":"${e.message.replace(/"/g, "'")}, "path":"${path}"}`;
   }
   res.send(resStr);
 })
