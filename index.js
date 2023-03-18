@@ -206,20 +206,18 @@ app.get('/recentDates', async function (req, res) {
 
 app.get('/deleteFile/:path', function (req, res) {
   let {path} = req.params;
-  console.log('deleting file', path);
-  res.send(`deleting file ${path}`);
   if(path === 'undefined') {
-    res.send('{"status":"skipping delete of undefined path"}');
+    res.send('{"status" : "skipping delete of undefined path"}');
     return;
   }
-  path = decodeURI(path).replace(/`/g, '/');
-  let resStr = `{"status":"ok", "path":"${path}"}`;
+  path = decodeURI(path).replaceAll('`', '/').replaceAll('~', '?');
+  let resStr = `{"status":"ok", "path":"${path.replaceAll('"', "'")}"}`;
   try { 
-    // console.log('test delete:', path);
+    console.log('deleting:', path);
     fs.unlinkSync(path); 
   }
   catch(e) {
-    resStr = `{"status":"${e.message.replace(/"/g, "'")}, "path":"${path}"}`;
+    resStr = `{"status":"${e.message.replaceAll('"', "'")}", "path":"${path.replaceAll('"', "'")}"}`;
   }
   res.send(resStr);
 })
