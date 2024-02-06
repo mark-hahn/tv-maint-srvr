@@ -1,7 +1,8 @@
 # /root/dev/apps/tv-maint-srvr/run
 cd /root/dev/apps/tv-maint-srvr
 # node index.js
-pm2 del all
-pm2 start index.js --watch index.js -f --name tv-maint
-pm2 list
-pm2 --time --lines 8 logs
+pm2 flush   tv-maint-srvr
+pm2 delete  tv-maint-srvr
+pm2 start index.js --watch index.js -f --name tv-maint-srvr --time
+pm2 save
+pm2 --time --lines 32 logs tv-maint-srvr
